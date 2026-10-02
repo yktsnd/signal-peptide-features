@@ -9,7 +9,7 @@ SMALL_NEUTRAL = frozenset("AGSC")
 POLAR = frozenset("STNQ")
 
 
-def cleavage_features(sequence: str) -> dict[str, float | str]:
+def cleavage_features(sequence: str, *, c_region: str | None = None) -> dict[str, float | str]:
     normalized = normalize_sequence(sequence)
     if len(normalized) < 3:
         raise ValueError("at least three residues are required for -3/-1 descriptors")
@@ -23,5 +23,7 @@ def cleavage_features(sequence: str) -> dict[str, float | str]:
         "small_neutral_minus_three_minus_one": float(
             minus_three in SMALL_NEUTRAL and minus_one in SMALL_NEUTRAL
         ),
-        "c_region_polarity": residue_fraction(normalized[-max(3, len(normalized) // 5) :], POLAR),
+        "c_region_polarity": residue_fraction(
+            c_region if c_region is not None else normalized[-max(3, len(normalized) // 5) :], POLAR
+        ),
     }

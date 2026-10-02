@@ -1,49 +1,156 @@
 # signal-peptide-features
 
-`signal-peptide-features` is a lightweight Python library for reproducible
-calculation of interpretable sequence-derived features for signal peptides and
-neighboring protein regions.
+[日本語](README.ja.md) · [Methods & descriptor dictionary](docs/methods.md)
 
-It is a feature calculator, not an SP optimizer. It does not predict the best
-signal peptide, secretion yield, cargo compatibility, or experimental outcome.
-It contains no OrthoSignal code, data, labels, model weights, or benchmark
-logic.
+**What does a signal-peptide mutation change — and does that answer depend on your region annotation?**
 
-## Install
+A NumPy-only Python library for interpretable sequence descriptors, paired mutation
+maps, annotation sensitivity, composition-preserving order controls, and descriptor
+double-mutant cycles. You supply the SP sequences and region annotations. Every CLI
+result retains the sequence, coordinates and source.
 
-```powershell
-python -m pip install -e ".[dev]"
+These calculations describe sequences. Secretion yield, the best SP, cleavage sites,
+and biological epistasis are not predicted. No OrthoSignal code, datasets, labels,
+weights or experimental benchmarks are included.
+
+## A hand-checkable ambiguity
+
+In `MKALLLSAAA`, position 3 is in H under boundaries `(2,6)` and in N under `(3,6)`.
+For the same A3L substitution:
+
+| Descriptor change | `(2,6)` | `(3,6)` |
+|---|---:|---:|
+| H mean Kyte–Doolittle hydropathy | +0.5 | 0 |
+| Complete-SP mean hydropathy | +0.2 | +0.2 |
+
+Changes are computed **within each annotation before pooling extrema**. This exposes
+which explanations depend on where a boundary is placed. The example is synthetic
+arithmetic, not a measured secretion experiment.
+
+![Synthetic mutation map: paired descriptor change extrema across two region annotations](docs/media/mutation-map.png)
+
+The plot shows the synthetic case above, not secretion measurements.
+
+## Install from source
+
+Python 3.12 or newer:
+
+```bash
+git clone https://github.com/yktsnd/signal-peptide-features.git
+cd signal-peptide-features
+python -m pip install -e .
 ```
 
-The core package depends only on NumPy. Optional embedding helpers accept
-already computed arrays and do not install or load a protein language model.
+No PyPI release has been verified. Use the clone or a wheel from a pinned commit.
+The core dependency is NumPy; embedding helpers accept precomputed arrays. All
+calculations run locally without an API key, model download or GPU.
 
-## Example
+## FASTA to research tables
+
+```bash
+# Legacy fractional regions, explicitly marked as heuristic
+sp-features examples/candidates.fasta -o features.csv
+
+# Explicit annotations: one row per sequence and annotation
+sp-features examples/candidates.fasta --regions examples/regions.csv -o annotated.csv
+
+# All single substitutions, paired across annotation alternatives
+sp-features examples/candidates.fasta --regions examples/regions.csv --mutation-scan -o mutations.csv
+
+# Per-residue scale values and N/H/C membership
+sp-features examples/candidates.fasta --regions examples/regions.csv --residue-profiles -o profiles.csv
+
+# Composition-preserving permutations with an explicit sample count and seed
+sp-features examples/candidates.fasta --regions examples/regions.csv --order-controls 8 --seed 17 -o controls.csv
+
+# Selected double-mutant cycles: f(AB)-f(A)-f(B)+f(WT)
+sp-features examples/candidates.fasta --regions examples/regions.csv --interaction-pairs examples/pairs.csv -o interactions.csv
+```
+
+Eight permutations are a software example, not a recommended research sample size.
+Analysis modes require explicit annotations and the interpretable preset.
+`python -m signal_peptide_features` runs the same CLI. `-` selects stdin/stdout.
+
+Region CSV columns: `sequence_id,annotation_id,n_end,h_end,source`. FASTA IDs must be
+unique and match region and pair CSVs exactly. Coordinates are **zero-based,
+end-exclusive**: N `[0,n_end)`, H `[n_end,h_end)`, C `[h_end,length)`.
+Mutation positions are **one-based**. Example annotations are illustrative, not ground truth.
+
+CSV output includes normalized sequences, sequence/implementation SHA-256,
+package/Python/NumPy versions, boundaries and annotation sources. Mutation maps also
+retain the annotation set and IDs attaining each delta extreme. Late input failure
+preserves an existing output and emits no partial stdout CSV; successful output
+replaces an existing destination.
+
+## Python research toolbox
+
+| Research question | Function |
+|---|---|
+| How much do descriptors vary with boundaries? | `boundary_sensitivity`: min/max/span over supplied annotations |
+| Which substitutions change which descriptors? | `mutation_effects`: paired deltas, extrema and direction by annotation |
+| Where do scale values originate? | `residue_profiles`: per-residue values and region membership |
+| Does composition or order explain the descriptor? | `composition_controls`: seeded composition-preserving permutations |
+| Do substitutions combine additively for the descriptor? | `interaction_effects`: caller-selected double-mutant cycles |
 
 ```python
-from signal_peptide_features import interpretable_sp_features
+from signal_peptide_features import RegionAnnotation, boundary_sensitivity, mutation_effects
 
-features = interpretable_sp_features("MKWVTFISLLFLFSSAYS")
-print(features["h_mean_hydrophobicity"])
+annotations = [
+    RegionAnnotation("scenario_a", 2, 6, "synthetic arithmetic example"),
+    RegionAnnotation("scenario_b", 3, 6, "synthetic boundary alternative"),
+]
+print(boundary_sensitivity("MKALLLSAAA", annotations)["h_mean_hydrophobicity"])
+# min=3.3, max=3.8, span approximately 0.5
+
+for effect in mutation_effects("MKALLLSAAA", annotations, positions=[3], alternatives="L"):
+    if effect["feature"] == "h_mean_hydrophobicity":
+        print(effect["delta_min"], effect["delta_max"], effect["direction"])
+# 0.0 approximately 0.5 annotation_dependent
 ```
 
-## Feature groups
+Existing `basic_sp_features(sequence)` and `interpretable_sp_features(sequence)` retain
+their default numerical behavior. Supply `boundaries=(n_end,h_end)` for explicit regions.
+[Methods](docs/methods.md) documents the legacy C-polarity difference, every descriptor,
+units, redundant columns, sources and verification status.
 
-The presets cover sequence architecture, charge, Kyte–Doolittle
-hydrophobicity, helix propensity, cleavage-proximal descriptors, Hessa/Sec61
-insertion proxies, Kidera-10 summaries, and deterministic local-window
-statistics. `split_fractional_regions` uses deterministic heuristic regions;
-they are **not biological cleavage predictions**.
+## Reproduce the worked example
 
-Hessa values are from Hessa et al. (2007), DOI
-`10.1038/nature06502`. Kidera factors are from Kidera et al. (1985), DOI
-`10.1007/BF01025492`. Kyte–Doolittle is Kyte and Doolittle (1982), DOI
-`10.1016/0022-2836(82)90515-0`. These scales are sequence descriptors and do
-not imply a secretion-performance claim.
+```bash
+python examples/research_walkthrough.py --output-dir research-output
+```
 
-## License and release review
+Optional exportable figure (PNG, SVG or PDF):
 
-Original code is MIT licensed. The cited numerical scales are retained with
-source attribution; a human should confirm redistribution treatment of
-source-derived constants before a public release. No external model weights,
-datasets, or copied software are included.
+```bash
+python -m pip install -e ".[plots]"
+python examples/plot_mutation_map.py research-output/mutations.csv --feature h_mean_hydrophobicity --output research-output/mutation-map.svg
+```
+
+The walkthrough produces six tables and a provenance manifest for a synthetic arithmetic case: descriptors, boundary sensitivity,
+mutations, profiles, permutations and double-mutant effects. Read the
+[research questions](docs/research-questions.md) before interpreting them.
+
+## Verification and publication use
+
+```bash
+python -m pip install -e ".[dev]" build
+python -m ruff check .
+python -m pytest
+python -m build
+```
+
+Tests cover independently extracted AAindex coefficients, analytic mutation and
+interaction cases, composition invariance, deterministic controls and strict input
+handling. CI builds and exercises an installed wheel on Python 3.12 and 3.13.
+See [validation scope](docs/validation.md).
+
+For a publication, cite the pinned repository commit/version and the scale papers in
+[Methods](docs/methods.md). Numerical tests verify software behavior; experimental
+secretion benchmarks and external predictive validation remain open.
+
+## License
+
+Original code is MIT licensed. Source-derived scales retain attribution. Their
+redistribution treatment, and that of the small independent AAindex fixture, needs
+human review before public package release. No external weights, experimental datasets
+or copied software are included.

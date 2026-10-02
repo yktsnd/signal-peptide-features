@@ -1,0 +1,5 @@
+sequence_id,annotation_id,n_end,h_end,source
+candidate_a,example_a,4,14,illustrative boundary choice; not biological ground truth
+candidate_a,example_b,5,14,illustrative alternative; not biological ground truth
+candidate_b,example_a,4,14,illustrative boundary choice; not biological ground truth
+candidate_b,example_b,5,14,illustrative alternative; not biological ground truth
