@@ -1,0 +1,4 @@
+include README.ja.md
+recursive-include docs *.md *.png
+recursive-include examples *.py *.csv *.fasta
+recursive-include tests *.py *.json

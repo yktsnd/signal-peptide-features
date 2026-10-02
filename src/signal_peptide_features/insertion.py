@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from .regions import normalize_sequence
 
-# Hessa et al. (2007), DOI:10.1038/nature06502. Lower values indicate lower
+# Hessa et al. (2005), DOI:10.1038/nature03216. Lower values indicate lower
 # transfer free energy; insertion_score exposes the negated mean for convenience.
 HESSA_SEC61 = {
     "A": 0.11,

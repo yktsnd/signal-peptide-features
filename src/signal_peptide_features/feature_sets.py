@@ -14,12 +14,26 @@ from .helix import helix_breaker_fraction, mean_helix_propensity
 from .hydrophobicity import hydrophobic_moment, mean_hydrophobicity, window_means
 from .insertion import insertion_features
 from .kidera import kidera_summary
-from .regions import normalize_sequence, split_fractional_regions
+from .regions import normalize_sequence, split_by_boundaries, split_fractional_regions
 
 
-def basic_sp_features(sequence: str) -> dict[str, float]:
+def _regions(sequence: str, boundaries: tuple[int, int] | None):
+    if boundaries is None:
+        return split_fractional_regions(sequence)
+    n_end, h_end = boundaries
+    return split_by_boundaries(
+        sequence,
+        n_region=(0, n_end),
+        h_region=(n_end, h_end),
+        c_region=(h_end, len(sequence)),
+    )
+
+
+def basic_sp_features(
+    sequence: str, *, boundaries: tuple[int, int] | None = None
+) -> dict[str, float]:
     normalized = normalize_sequence(sequence)
-    regions = split_fractional_regions(normalized)
+    regions = _regions(normalized, boundaries)
     n_region = str(regions["n"])
     h_region = str(regions["h"])
     c_region = str(regions["c"])
@@ -50,9 +64,11 @@ def basic_sp_features(sequence: str) -> dict[str, float]:
     }
 
 
-def interpretable_sp_features(sequence: str) -> dict[str, float | str]:
+def interpretable_sp_features(
+    sequence: str, *, boundaries: tuple[int, int] | None = None
+) -> dict[str, float | str]:
     normalized = normalize_sequence(sequence)
-    regions = split_fractional_regions(normalized)
+    regions = _regions(normalized, boundaries)
     n_region = str(regions["n"])
     h_region = str(regions["h"])
     c_region = str(regions["c"])
@@ -61,7 +77,7 @@ def interpretable_sp_features(sequence: str) -> dict[str, float | str]:
     h_mean = mean_hydrophobicity(h_region)
     c_mean = mean_hydrophobicity(c_region)
     result: dict[str, float | str] = {
-        **basic_sp_features(normalized),
+        **basic_sp_features(normalized, boundaries=boundaries),
         "n_charge_density": n_charge["charge_density"],
         "n_acidic_count": n_charge["negative_count"],
         "n_hydrophobicity": mean_hydrophobicity(n_region),
@@ -79,7 +95,7 @@ def interpretable_sp_features(sequence: str) -> dict[str, float | str]:
         "c_polarity": residue_fraction(c_region, "STNQ"),
         "minus_three_residue": normalized[-3],
         "minus_one_residue": normalized[-1],
-        **cleavage_features(normalized),
+        **cleavage_features(normalized, c_region=c_region if boundaries is not None else None),
         **insertion_features(h_region),
         **kidera_summary(normalized),
     }

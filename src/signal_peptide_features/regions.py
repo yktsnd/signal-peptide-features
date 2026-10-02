@@ -22,7 +22,13 @@ def normalize_sequence(sequence: str) -> str:
 
 
 def _check_bound(name: str, bound: tuple[int, int], length: int) -> None:
-    if len(bound) != 2 or bound[0] < 0 or bound[1] <= bound[0] or bound[1] > length:
+    if (
+        len(bound) != 2
+        or any(type(value) is not int for value in bound)
+        or bound[0] < 0
+        or bound[1] <= bound[0]
+        or bound[1] > length
+    ):
         raise ValueError(f"{name} must be a non-empty half-open interval inside the sequence")
 
 
@@ -43,9 +49,9 @@ def split_by_boundaries(
     bounds = {"n": n_region, "h": h_region, "c": c_region}
     for name, bound in bounds.items():
         _check_bound(name, bound, len(normalized))
-    ordered = sorted(bounds.items(), key=lambda item: item[1][0])
+    ordered = list(bounds.items())
     if any(left[1][1] > right[1][0] for left, right in zip(ordered, ordered[1:], strict=False)):
-        raise ValueError("regions must not overlap")
+        raise ValueError("regions must be in N/H/C order and must not overlap")
     return {
         "n": normalized[n_region[0] : n_region[1]],
         "h": normalized[h_region[0] : h_region[1]],
