@@ -2,15 +2,37 @@
 
 [日本語](README.ja.md) · [Methods & descriptor dictionary](docs/methods.md)
 
-**What does a signal-peptide mutation change — and does that answer depend on your region annotation?**
+**Explore one signal peptide in its precursor context, with transparent evidence.**
+
+Version 0.3 adds a local React/TypeScript workspace: linked residue profiles, cleavage
+zoom including +1, exploratory N/H/C annotations, a physiological-context × property
+matrix, per-metric provenance, structure annotation import and JSON/CSV/HTML/SVG export.
+PDF export uses your browser's print dialog. Comparison is in Advanced; legacy mutation
+and sensitivity APIs remain available.
+
+```bash
+# From the repository directory
+pip install -e '.[gui]'
+sp-features gui
+# Open http://127.0.0.1:8765
+```
+
+Unlike general peptide descriptors in [peptides.py](https://peptides.readthedocs.io/),
+this project specializes in SP regions and the cleavage junction. Missing annotations
+are automatically filled by TSignal **after model setup**. Without setup, they remain
+unknown. Sequence properties do not predict secretion yield or cleavage efficiency.
+See [GUI and TSignal setup](docs/explorer.md) for coordinates, import formats and limits.
+
+![Single-sequence explorer with synthetic input and provided cleavage](docs/media/explorer-desktop.png)
 
 A NumPy-only Python library for interpretable sequence descriptors, paired mutation
 maps, annotation sensitivity, composition-preserving order controls, and descriptor
 double-mutant cycles. You supply the SP sequences and region annotations. Every CLI
 result retains the sequence, coordinates and source.
 
-These calculations describe sequences. Secretion yield, the best SP, cleavage sites,
-and biological epistasis are not predicted. No OrthoSignal code, datasets, labels,
+These calculations describe sequences. Secretion yield, the best SP,
+and biological epistasis are not predicted. The optional TSignal adapter supplies
+predicted SP presence, type and cleavage annotations. No OrthoSignal code, datasets, labels,
 weights or experimental benchmarks are included.
 
 ## A hand-checkable ambiguity

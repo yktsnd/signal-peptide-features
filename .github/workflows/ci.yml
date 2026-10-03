@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: python -m pip install -e '.[dev]' build
+      - run: python -m pip install -e '.[dev,gui]' build httpx
       - run: python -m ruff check .
       - run: python -m pytest
       - run: python -m build
@@ -24,3 +24,24 @@ jobs:
           /tmp/sp-features-wheel/bin/python -m pip install dist/*.whl
           /tmp/sp-features-wheel/bin/sp-features examples/candidates.fasta --regions examples/regions.csv --mutation-scan -o /tmp/mutations.csv
           /tmp/sp-features-wheel/bin/python -m signal_peptide_features examples/candidates.fasta -o /tmp/features.csv
+          /tmp/sp-features-wheel/bin/python -c "from importlib.resources import files; assert files('signal_peptide_features').joinpath('web/index.html').is_file(); from signal_peptide_features import analyze_sequence; assert analyze_sequence('MKKLLAAA', mode='sp')['schema_version'] == '1.0'"
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '..[gui]'
+      - run: npx playwright install --with-deps chromium --only-shell
+      - run: npm run test:browser
