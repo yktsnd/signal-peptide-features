@@ -22,7 +22,7 @@ dev = ["pytest>=8.3,<9", "ruff>=0.9,<1"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-signal_peptide_features = ["scales.json", "web/*", "web/assets/*"]
+signal_peptide_features = ["scales.json", "usage-contract.json", "usage.sql", "web/*", "web/assets/*"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

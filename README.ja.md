@@ -87,3 +87,6 @@ SHA-256は、配列や実装を識別するための値です。再計算で同�
 
 コードのライセンスはMITです。文献由来の尺度とAAindex参照表の利用条件は、
 公開パッケージとして配布する前に確認が必要です。
+
+
+UI 0.5 adds opt-in, content-free usage recording, deletion controls and an owner/local administrator report. See [usage analytics](docs/usage-analytics.md) for the event inventory, retention, validation and limits.

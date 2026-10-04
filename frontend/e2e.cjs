@@ -7,7 +7,7 @@ const {join}=require('node:path');
 const assert=require('node:assert/strict');
 (async()=>{
  const folder=await mkdtemp(join(tmpdir(),'sp-explorer-e2e-'));
- const server=spawn(process.env.PYTHON||'python',['-m','uvicorn','signal_peptide_features.server:app','--host','127.0.0.1','--port','18765'],{env:{...process.env,SP_FEATURES_CONFIG:join(folder,'absent.json')}});
+ const server=spawn(process.env.PYTHON||'python',['-m','uvicorn','signal_peptide_features.server:app','--host','127.0.0.1','--port','18765'],{env:{...process.env,SP_FEATURES_CONFIG:join(folder,'absent.json'),SP_USAGE_DB:join(folder,'usage.db')}});
  let browser;
  try{
   let ready=false;
@@ -16,7 +16,14 @@ const assert=require('node:assert/strict');
   browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
+  const recorded=[];
+  page.on('request',r=>{if(r.url().includes('/api/telemetry/')&&r.postData())recorded.push(r.postData());});
   await page.goto('http://127.0.0.1:18765');
+  await page.waitForFunction(()=>document.querySelector('.usage-settings button')?.disabled===false);
+  assert.equal((await (await page.request.get('http://127.0.0.1:18765/api/telemetry/report')).json()).health.events,0);
+  const sessionRequest=page.waitForResponse(r=>r.url().endsWith('/api/telemetry/sessions')&&r.status()===200);
+  await page.getByRole('button',{name:'操作記録を許可',exact:true}).click();await sessionRequest;await page.waitForFunction(()=>!document.querySelector('.usage-panel'));
+
   await page.getByRole('button',{name:'人工配列の例',exact:true}).click();
   await page.getByRole('button',{name:'解析する',exact:true}).click();
   await page.getByRole('heading',{name:'配列と切断点',exact:true}).waitFor();
@@ -60,7 +67,16 @@ const assert=require('node:assert/strict');
   await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
   await page.setViewportSize({width:320,height:740});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
   await page.pdf({path:join(folder,'view.pdf')});assert((await readFile(join(folder,'view.pdf'))).length>1000);
+  await page.waitForFunction(async()=>{const r=await fetch('/api/telemetry/report');const v=await r.json();return v.health.events>0&&v.daily.some(row=>row.event==='analysis_completed')&&v.daily.some(row=>row.event==='selection_changed');});
+  const usage=await (await page.request.get('http://127.0.0.1:18765/api/telemetry/report')).json();
+  assert(usage.health.events>0);assert(usage.daily.some(r=>r.event==='analysis_completed'));assert(usage.daily.some(r=>r.event==='selection_changed'));
+  assert(recorded.every(v=>!v.includes('MKKLLLALALAVASASAADPEQKSTV')&&!v.includes('人工配列の例')&&!v.includes('sequence_sha256')));
+  await page.getByRole('button',{name:'操作記録・使いやすさの評価',exact:true}).click();
+  const deletion=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().includes('/api/telemetry/sessions/')&&r.status()===200);
+  await page.getByRole('button',{name:'記録を削除して停止',exact:true}).click();await deletion;
+  assert.equal((await (await page.request.get('http://127.0.0.1:18765/api/telemetry/report')).json()).health.events,0);
+  await page.goto('http://127.0.0.1:18765/admin');await page.getByRole('heading',{name:'使いやすさの改善レポート',exact:true}).waitFor();
   assert.deepEqual(errors,[]);
-  console.log('Browser checks passed: range selection, independent filters/tracks, exact counts, provenance, saved-view restoration, exports, report, JA/EN, 390/320px width and PDF.');
+  console.log('Browser checks passed: opt-in usage, content-free payloads, deletion, admin report, range selection, independent filters/tracks, exact counts, provenance, saved-view restoration, exports, report, JA/EN, 390/320px width and PDF.');
  }finally{if(browser)await browser.close();server.kill();await rm(folder,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1});

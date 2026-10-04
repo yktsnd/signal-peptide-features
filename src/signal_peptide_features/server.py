@@ -13,8 +13,10 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .analysis import analyze_sequence
 from .prediction import predict, read_config
 from .regions import normalize_sequence
+from .usage import router as usage_router
 
 app = FastAPI(title="Signal Peptide Explorer")
+app.include_router(usage_router)
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"])
 
 
@@ -157,3 +159,8 @@ def index():
     if not (WEB / "index.html").exists():
         raise HTTPException(503, "Build frontend first: cd frontend && npm ci && npm run build")
     return FileResponse(WEB / "index.html")
+
+
+@app.get("/admin")
+def usage_admin():
+    return index()

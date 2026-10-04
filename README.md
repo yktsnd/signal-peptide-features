@@ -177,3 +177,6 @@ Original code is MIT licensed. Source-derived scales retain attribution. Their
 redistribution treatment, and that of the small independent AAindex fixture, needs
 human review before public package release. No external weights, experimental datasets
 or copied software are included.
+
+
+UI 0.5 adds opt-in, content-free usage recording, deletion controls and an owner/local administrator report. See [usage analytics](docs/usage-analytics.md) for the event inventory, retention, validation and limits.
