@@ -4,11 +4,13 @@
 
 **Explore one signal peptide in its precursor context, with transparent evidence.**
 
-Version 0.3 adds a local React/TypeScript workspace: linked residue profiles, cleavage
-zoom including +1, exploratory N/H/C annotations, a physiological-context × property
-matrix, per-metric provenance, structure annotation import and JSON/CSV/HTML/SVG export.
-PDF export uses your browser's print dialog. Comparison is in Advanced; legacy mutation
-and sensitivity APIs remain available.
+UI 0.4 separates input from results and organizes the result into sequence/cleavage,
+metrics, evidence/settings and a descriptor index. Select full intervals, navigate the
+precursor, and inspect multiple property tracks with shared coordinates and stable axes.
+Metrics expose units, intervals, definitions and sources. The physiological matrix is
+a classification index, not a score or count display. Comparison stays in Advanced.
+Save/restoration uses JSON; filtered/all metrics use CSV; figures use SVG; an offline
+HTML report includes all descriptors and settings. Existing Python/CLI APIs remain available.
 
 ```bash
 # From the repository directory
@@ -23,7 +25,6 @@ are automatically filled by TSignal **after model setup**. Without setup, they r
 unknown. Sequence properties do not predict secretion yield or cleavage efficiency.
 See [GUI and TSignal setup](docs/explorer.md) for coordinates, import formats and limits.
 
-![Single-sequence explorer with synthetic input and provided cleavage](docs/media/explorer-desktop.png)
 
 A NumPy-only Python library for interpretable sequence descriptors, paired mutation
 maps, annotation sensitivity, composition-preserving order controls, and descriptor

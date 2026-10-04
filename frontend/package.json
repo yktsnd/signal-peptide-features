@@ -1,11 +1,12 @@
 {
   "name": "signal-peptide-explorer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && vite build",
-    "test:browser": "node e2e.cjs"
+    "test:browser": "node e2e.cjs",
+    "test:gui": "node tests/check-ui.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
