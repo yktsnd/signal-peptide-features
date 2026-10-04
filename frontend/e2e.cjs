@@ -47,6 +47,7 @@ const assert=require('node:assert/strict');
   await page.locator('.metrics-table .interval-link').first().click();
   assert.match(await page.locator('.inspection-grid .coordinate-value').last().textContent(),/1–18/);
   await page.getByLabel('保存した解析JSONを開く',{exact:true}).setInputFiles(join(folder,'analysis.json'));
+  await page.waitForFunction(()=>document.querySelectorAll('.inspection-grid .coordinate-value')[1]?.textContent.includes('16–20'));
   assert.match(await page.locator('.inspection-grid .coordinate-value').last().textContent(),/16–20/);
   await page.locator('.export-menu summary').click();
   await download('全指標 · CSV','metrics.csv');await download('表示中の物性図 · SVG','figure.svg');await download('解析レポート · HTML','report.html');
