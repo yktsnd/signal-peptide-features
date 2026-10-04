@@ -38,6 +38,8 @@ test('public endpoint requires stream authorization, same origin, and rejects en
  assert.equal((await f.env.DB.prepare('SELECT count(*) AS n FROM ux_events').first()).n,0);
  assert.equal((await telemetryFetch(request('report'),f.env)).status,403);
  const owner=request('report');owner.headers.set('oai-authenticated-user-id','not-owner');assert.equal((await telemetryFetch(owner,f.env)).status,403);
+ f.env.TELEMETRY_ADMIN_EMAILS='owner@example.org';const emailOnly=request('report');emailOnly.headers.set('oai-authenticated-user-email','owner@example.org');assert.equal((await telemetryFetch(emailOnly,f.env)).status,403);
+ const signedOwner=request('report');signedOwner.headers.set('oai-authenticated-user-id','site-scoped-owner');signedOwner.headers.set('oai-authenticated-user-email','owner@example.org');assert.equal((await telemetryFetch(signedOwner,f.env)).status,200);
  }finally{f.close();}});
 test('retry deduplication, daily aggregation, administrator timeline and revocable deletion',async()=>{const f=fixture();try{
  await open(f.env);const e=event();for(let i=0;i<2;i++)assert.equal((await telemetryFetch(request(`sessions/${id}/events`,'POST',{events:[e]},token),f.env)).status,200);

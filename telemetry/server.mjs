@@ -70,7 +70,9 @@ export async function telemetryFetch(request,env) {
     if(path==='/api/telemetry/report'&&request.method==='GET'){
       const identity=request.headers.get('oai-authenticated-user-id');
       const allowed=(env.TELEMETRY_ADMIN_IDS||'').split(',').filter(Boolean);
-      if(!identity||!allowed.includes(identity))return json({code:'admin_required'},403);
+      const email=request.headers.get('oai-authenticated-user-email')?.trim().toLowerCase();
+      const ownerEmails=(env.TELEMETRY_ADMIN_EMAILS||'').split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
+      if(!identity||(!allowed.includes(identity)&&(!email||!ownerEmails.includes(email))))return json({code:'admin_required'},403);
       await prune(db,now);
       const days=url.searchParams.get('days')==='7'?7:30;
       const since=now-days*86400000;
