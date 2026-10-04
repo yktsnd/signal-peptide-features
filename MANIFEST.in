@@ -2,3 +2,5 @@ include README.ja.md
 recursive-include docs *.md *.png
 recursive-include examples *.py *.csv *.fasta
 recursive-include tests *.py *.json
+recursive-include frontend *.json *.ts *.tsx *.css *.html *.cjs *.mjs *.txt
+prune frontend/node_modules

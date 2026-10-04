@@ -239,6 +239,11 @@ def _reference(path: str) -> FastaRecord:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    arguments = list(argv) if argv is not None else sys.argv[1:]
+    if arguments and arguments[0] in {"gui", "configure-tsignal"}:
+        from .web_cli import main as web_main
+
+        return web_main(arguments)
     parser = argparse.ArgumentParser(
         description="Calculate SP descriptors from FASTA; optional deltas are candidate minus "
         "reference, not secretion predictions. Supply signal-peptide sequences, not full proteins."
