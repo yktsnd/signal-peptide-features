@@ -4,7 +4,7 @@ import { Guide } from './Guide';
 import { track } from './telemetry';
 import { contract } from '../../telemetry/contract.mjs';
 import { SequenceViewer } from './SequenceViewer';
-import { basisLabel, clampInterval, exportedSequence, exportedTracks, filterMetrics, focusViewport, formatValue, metricCSV, metricDefinition, metricUnit, properties, safeHTML, saveFile as baseSaveFile, scales, scopeLabel, sourceURL, warningLabel, type Interval, type Metric, type Result, type Translate } from './model';
+import { basisLabel, clampInterval, exportedSequence, exportedTracks, filterMetrics, formatValue, metricCSV, metricDefinition, metricUnit, properties, safeHTML, saveFile as baseSaveFile, scales, scopeLabel, sourceURL, warningLabel, type Interval, type Metric, type Result, type Translate } from './model';
 function saveFile(name: string, text: string, type?: string) {
   const kind=name.endsWith('.csv')?'csv':name.endsWith('.svg')?'svg':name.endsWith('.html')?'html':'json';
   try { baseSaveFile(name,text,type); track('export_generated','export',{kind,outcome:'success'}); }
@@ -34,7 +34,7 @@ export function ResearchWorkspace({ record, history, t, onEdit, onRestore, onOpe
   const filtered = filterMetrics(result, { scope, property: metricProperty, process, query, estimates: showEst });
   useEffect(() => { track('filter_changed','filters',{hits:filtered.length,filled:!!query,estimated:showEst,scope:contract.enums.scope.includes(scope)?scope:scope?'other':'all',property:contract.enums.property.includes(metricProperty)?metricProperty:metricProperty?'other':'all',process:contract.enums.process.includes(process)?process:process?'other':'all'}); },[scope,metricProperty,process,query,showEst]);
   useEffect(() => { onView?.({ selected, selection, viewport, tracks, showEst, scope, property: metricProperty, process, query, tab }); }, [selected, selection, viewport, tracks, showEst, scope, metricProperty, process, query, tab, onView]);
-  function selectRange(range: Interval) { const value = clampInterval(range[0], range[1], length); setSelection(value); setViewport(focusViewport(value, length)); setSelected(p => p >= value[0] && p <= value[1] ? p : cut != null && cut + 1 >= value[0] && cut + 1 <= value[1] ? cut + 1 : value[0]); }
+  function selectRange(range: Interval) { const value = clampInterval(range[0], range[1], length); setSelection(value); setViewport(value); setSelected(p => p >= value[0] && p <= value[1] ? p : cut != null && cut + 1 >= value[0] && cut + 1 <= value[1] ? cut + 1 : value[0]); }
   function selectPosition(position: number, extend: boolean) { if (extend) setSelection(clampInterval(selected, position, length)); else { setSelected(position); setSelection([position, position]); } }
   function hideEstimates(value: boolean) { setShowEst(value); if (!value && result.regions.basis === 'rule_estimate' && ['N', 'H', 'C'].includes(scope)) setScope(cut != null ? 'SP' : 'whole'); }
   function saveAnalysis() { track('export_requested','export',{kind:'json',outcome:'requested'}); saveFile('signal-peptide-analysis.json', JSON.stringify({ ...record, view: { selected, selection, viewport, tracks, showEst, scope, property: metricProperty, process, query, tab } }, null, 2)); setExportMessage(t('解析JSONを保存しました。配列、注釈、指標、表示範囲を含みます。', 'Saved analysis JSON, including sequence, annotations, metrics and view settings.')); }
