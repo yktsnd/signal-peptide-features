@@ -161,3 +161,17 @@ export function saveFile(name: string, text: string, type = 'application/json') 
   const a = document.createElement('a'); a.href = url; a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+/** The same position frame as exportedTracks; no normalized physiological score. */
+export function exportedSequence(result: Result, viewport: Interval, selected: number, estimates: boolean, t: Translate) {
+  const cut=result.annotations.cleavage.value as number|null, width=viewport[1]-viewport[0]+1;
+  const x=(p:number)=>58+(p-viewport[0])/Math.max(1,width-1)*918;
+  const bands: {label:string;range:Interval;color:string}[]=cut==null ? [{label:t('切断位置未指定','Cleavage unspecified'),range:[1,result.sequence.length],color:'#edf0f2'}] : [
+    {label:t('シグナルペプチド','Signal peptide'),range:[1,cut],color:'#dce8ee'},
+    ...(cut<result.sequence.length?[{label:t('成熟側','Mature sequence'),range:[cut+1,result.sequence.length] as Interval,color:'#edf0f2'}]:[])
+  ];
+  const rectangles=bands.map(b=>{const a=Math.max(viewport[0],b.range[0]),end=Math.min(viewport[1],b.range[1]);if(a>end)return '';const left=Math.max(58,x(a-.5)),right=width===1?976:Math.min(976,x(end+.5));return `<rect x="${left}" y="42" width="${Math.max(1,right-left)}" height="26" fill="${b.color}"/><text x="${(left+right)/2}" y="60" text-anchor="middle" font-size="12">${right-left>120?safeHTML(b.label):''}</text>`;}).join('');
+  const regions=estimates?Object.entries(result.regions.intervals||{}).map(([key,range])=>{const a=Math.max(viewport[0],range[0]),b=Math.min(viewport[1],range[1]);if(a>b)return '';const left=Math.max(58,x(a-.5)),right=width===1?976:Math.min(976,x(b+.5));return `<rect x="${left}" y="72" width="${Math.max(1,right-left)}" height="19" fill="${key==='N'?'#c4dbe8':key==='H'?'#cadfce':'#ebd9b7'}"/><text x="${(left+right)/2}" y="86" text-anchor="middle" font-size="11">${right-left>22?key:''}</text>`;}).join(''):'';
+  const letters=width<=40?result.profiles.slice(viewport[0]-1,viewport[1]).map(p=>`<text x="${x(p.position)}" y="115" text-anchor="middle" font-family="monospace" font-size="17" fill="${p.position===selected?'#235d85':'#263746'}">${p.residue}</text><text x="${x(p.position)}" y="132" text-anchor="middle" font-size="10">${p.position}</text>`).join(''):`<text x="58" y="120" font-size="12">${viewport[0]}</text><text x="976" y="120" text-anchor="end" font-size="12">${viewport[1]}</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 166"><title>${safeHTML(t('配列と領域','Sequence and regions'))}</title><rect width="1000" height="166" fill="white"/><text x="58" y="20" font-size="13">${safeHTML(t('切断位置','Cleavage'))}: ${cut==null?'?':cut} · ${safeHTML(basisLabel(result.annotations.cleavage.basis,t))} · ${safeHTML(t('選択残基','Selected residue'))} ${selected}</text>${rectangles}${regions}${letters}${cut!=null&&cut>=viewport[0]&&cut<viewport[1]?`<line x1="${x(cut+.5)}" x2="${x(cut+.5)}" y1="32" y2="138" stroke="#a74735" stroke-dasharray="4 3"/><text x="${Math.min(935,x(cut+.5)+5)}" y="34" font-size="11">−1 │ +1</text>`:''}<text x="58" y="157" font-size="11">${safeHTML(t('N/H/Cの由来','N/H/C basis'))}: ${safeHTML(basisLabel(estimates?result.regions.basis:'missing',t))}</text></svg>`;
+}

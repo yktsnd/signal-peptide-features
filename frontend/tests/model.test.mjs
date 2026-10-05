@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseInput, validateResult, relativePosition, focusViewport, clampInterval, filterMetrics, rangeSummary, trackGeometry, metricCSV, exportedTracks, metricUnit } from '../src/model.ts';
+import { parseInput, validateResult, relativePosition, focusViewport, clampInterval, filterMetrics, rangeSummary, trackGeometry, metricCSV, exportedTracks, metricUnit, exportedSequence } from '../src/model.ts';
 if (!process.env.GUI_FIXTURE) throw Error('Run npm run test:gui to generate native fixtures.');
 const result = JSON.parse(readFileSync(process.env.GUI_FIXTURE));
 const t=(ja,en)=>en;
@@ -13,3 +13,5 @@ test('independent filters produce exact rows and exported count',()=>{const filt
 test('selected interval summary agrees with native stored SP means',()=>{const summary=rangeSummary(result,[1,18]);for(const [key,value] of Object.entries(summary)){assert(Math.abs(value-result.metrics.find(m=>m.id==='SP.'+key).value)<1e-12)}const point=rangeSummary(result,[19,19]);assert.equal(point.hydrophobicity,result.profiles[18].hydrophobicity)});
 test('track y axes stay fixed across viewport changes; single residue is finite',()=>{const a=trackGeometry(result,'hydrophobicity',[1,26]),b=trackGeometry(result,'hydrophobicity',[13,24]),single=trackGeometry(result,'charge',[19,19]);assert.equal(a.lo,b.lo);assert.equal(a.hi,b.hi);assert.equal(a.y(0),b.y(0));assert(!single.points.includes('NaN'));assert.equal(a.x(1),58);assert.equal(a.x(26),976)});
 test('exports preserve source, selection coordinates and safety',()=>{const svg=exportedTracks(result,['hydrophobicity','charge','flexibility'],[13,24],[18,19],19,t);assert.equal((svg.match(/<svg/g)||[]).length,3);assert.match(svg,/KYTJ820101/);assert.match(svg,/−1 │ \+1/);assert.match(metricCSV(result.metrics),/boundary_basis/);assert.equal(metricUnit(result.metrics.find(m=>m.id==='SP.fraction_A'),t),'fraction (0–1)')});
+
+test('sequence figure retains boundary provenance and unknown states',()=>{const svg=exportedSequence(result,[1,24],19,true,t);assert.match(svg,/Signal peptide/);assert.match(svg,/−1 │ \+1/);assert.match(svg,/N\/H\/C basis/);const unknown=structuredClone(result);unknown.annotations.cleavage={value:null,basis:'missing'};unknown.regions.intervals=null;assert.match(exportedSequence(unknown,[1,24],1,false,t),/Cleavage unspecified/);});

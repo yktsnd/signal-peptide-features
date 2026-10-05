@@ -1,7 +1,7 @@
 /* Browser regression checks run in CI against the packaged native backend. */
 const {chromium}=require('playwright');
 const {spawn}=require('node:child_process');
-const {mkdtemp,readFile,rm}=require('node:fs/promises');
+const {mkdtemp,readFile,rm,mkdir}=require('node:fs/promises');
 const {tmpdir}=require('node:os');
 const {join}=require('node:path');
 const assert=require('node:assert/strict');
@@ -24,10 +24,11 @@ const assert=require('node:assert/strict');
   const sessionRequest=page.waitForResponse(r=>r.url().endsWith('/api/telemetry/sessions')&&r.status()===200);
   await page.getByRole('button',{name:'操作記録を許可',exact:true}).click();await sessionRequest;await page.waitForFunction(()=>!document.querySelector('.usage-panel'));
 
-  await page.getByRole('button',{name:'人工配列の例',exact:true}).click();
-  await page.getByRole('button',{name:'解析する',exact:true}).click();
+  await mkdir('test-artifacts',{recursive:true});await page.screenshot({path:'test-artifacts/input-desktop.png',fullPage:true});
+  await page.getByRole('button',{name:'例の結果を見る',exact:true}).click();
   await page.getByRole('heading',{name:'配列と切断点',exact:true}).waitFor();
   assert.match(await page.locator('.inspection-grid .coordinate-value').first().textContent(),/19.*D.*\+1/);
+  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'test-artifacts/result-desktop.png',fullPage:true});
   const initial=await page.locator('.sequence-panel').boundingBox(), inspector=await page.locator('.residue-inspector').boundingBox();
   assert(inspector.x>initial.x && Math.abs(inspector.y-initial.y)<12);
   const graph=page.locator('.property-track svg').first();await graph.focus();await page.keyboard.press('ArrowRight');
@@ -74,7 +75,12 @@ const assert=require('node:assert/strict');
   await page.getByRole('button',{name:'日本語',exact:true}).click();
   await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
   const mobileSequence=await page.locator('.sequence-panel').boundingBox(), mobileInspector=await page.locator('.residue-inspector').boundingBox(), mobileTracks=await page.locator('.tracks-panel').boundingBox();
-  assert(mobileInspector.y>=mobileSequence.y+mobileSequence.height && mobileInspector.y<mobileTracks.y);
+  assert(mobileInspector.y>=mobileSequence.y+mobileSequence.height && mobileTracks.y>=mobileSequence.y);
+  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'test-artifacts/result-mobile.png',fullPage:true});
+  const zoom=page.getByRole('button',{name:'残基が読める大きさに拡大',exact:true});if(await zoom.isVisible())await zoom.click();
+  assert(await page.locator('.aligned-residues .residue').count()>0);
+  const letters=await page.locator('.aligned-residues').boundingBox(),track=await page.locator('.property-track svg').first().boundingBox();
+  assert(Math.abs(letters.x-(track.x+track.width*.058))<2);
   await page.getByRole('button',{name:'指標一覧',exact:true}).click();
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
   await page.getByRole('button',{name:'指標を探す',exact:true}).click();

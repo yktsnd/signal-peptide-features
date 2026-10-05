@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { basisLabel, focusViewport, formatValue, properties, rangeSummary, relativePosition, scales, sourceURL, trackGeometry, type Interval, type Profile, type Result, type Translate } from './model';
+import React, { useEffect, useRef, useState } from 'react';
+import { basisLabel, focusViewport, formatValue, properties, rangeSummary, relativePosition, scales, sourceURL, trackGeometry, type Interval, type Result, type Translate } from './model';
 
 type Props = {
   result: Result; selected: number; selection: Interval; viewport: Interval; estimates: boolean;
@@ -18,7 +18,6 @@ export function SequenceViewer({ result, selected, selection, viewport, estimate
   const intervals = result.regions.intervals;
   const rangeOptions: { key: string; label: string; range: Interval; estimated?: boolean }[] = [
     ...(cut != null ? [{ key: 'SP', label: t('SP領域', 'Signal peptide'), range: [1, cut] as Interval }] : []),
-    ...Object.entries(intervals || {}).filter(() => estimates || result.regions.basis !== 'rule_estimate').map(([key, range]) => ({ key, label: `${key} ${t('領域', 'region')}`, range: range as Interval, estimated: result.regions.basis === 'rule_estimate' })),
     ...(cut != null ? [{ key: 'junction', label: t('切断点 ±6', 'Junction ±6'), range: [Math.max(1, cut - 5), Math.min(length, cut + 6)] as Interval }] : []),
     ...(cut != null && cut < length ? [{ key: 'mature', label: t('成熟側のN末端', 'Mature N-terminus'), range: [cut + 1, Math.min(length, cut + result.settings.mature_window)] as Interval }] : []),
   ];
@@ -31,13 +30,23 @@ export function SequenceViewer({ result, selected, selection, viewport, estimate
     setRangeError(''); onRange([a, b]); setRangeStart(''); setRangeEnd('');
   }
   const width = viewport[1] - viewport[0] + 1;
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [stripWidth, setStripWidth] = useState(800);
+  useEffect(() => { const node=stripRef.current; if (!node) return; const observer=new ResizeObserver(entries=>setStripWidth(entries[0].contentRect.width)); observer.observe(node); return()=>observer.disconnect(); }, []);
+  const showLetters = width <= Math.max(1, Math.floor(stripWidth / 27));
+  const bands: {name:string;range:Interval;kind:string}[] = [
+    ...(cut != null ? [{name:t('シグナルペプチド','Signal peptide'),range:[1,cut] as Interval,kind:'SP'}] : [{name:t('境界未指定','Boundary unspecified'),range:[1,length] as Interval,kind:'unknown'}]),
+    ...(cut != null && cut < length ? [{name:t('成熟側','Mature sequence'),range:[cut+1,length] as Interval,kind:'mature'}]:[])
+  ];
+  const bandStyle = (a:number,b:number) => {const left=Math.max(0,(a-viewport[0]-.5)/Math.max(1,width-1)*100);const right=width===1?100:Math.min(100,(b-viewport[0]+.5)/Math.max(1,width-1)*100);return {left:`${left}%`,width:`${Math.max(0,right-left)}%`};};
+  const xPercent = (position:number) => (position-viewport[0]) / Math.max(1,width-1) * 100;
+
   function pan(direction: number) {
     const start = Math.max(1, Math.min(length - width + 1, viewport[0] + direction * Math.max(1, Math.floor(width * .8))));
     onViewport([start, start + width - 1]);
   }
   const visible = result.profiles.slice(viewport[0] - 1, viewport[1]);
-  const groups: Profile[][] = [];
-  if (width <= 180) for (let i = 0; i < visible.length; i += 20) groups.push(visible.slice(i, i + 20));
+
   return <div className="explorer-grid">
     <section className="panel sequence-panel" aria-labelledby="sequence-title">
       <div className="panel-heading"><div><h2 id="sequence-title">{t('配列と切断点', 'Sequence & cleavage')}</h2><p>{cut != null ? <>{t('切断', 'Cleavage')} {cut} │ {cut < length ? cut + 1 : t('成熟側なし', 'No mature side')} · <span className={`basis-tag ${result.annotations.cleavage.basis}`}>{basisLabel(result.annotations.cleavage.basis, t)}</span></> : t('切断位置は未指定です', 'Cleavage position is unspecified')}</p></div>
@@ -65,18 +74,19 @@ export function SequenceViewer({ result, selected, selection, viewport, estimate
       {rangeError && <p className="error" role="alert">{rangeError}</p>}
       {cut == null && <p className="notice">{result.annotations.has_sp.value === false ? t('SPなしの注釈です。配列全体の物性を表示しています。', 'Annotated as no SP. Full-sequence descriptors are shown.') : t('切断位置の情報がありません。入力注釈を追加すると、SP領域と切断点前後を確認できます。', 'Cleavage is unknown. Add an annotation to inspect SP and junction intervals.')}{onEdit && result.annotations.has_sp.value !== false && <button data-ux="sequenceviewer-button-add-cut" className="text-button" onClick={() => onEdit?.('cleavage')}>{t('切断位置を追加', 'Add cleavage position')}</button>}</p>}
       {cut === length && <p className="notice">{t('成熟側の配列が入力にありません。＋1以降は確認できません。', 'The mature sequence is absent; +1 and later positions are unavailable.')}</p>}
-      {intervals && estimates && result.regions.basis === 'rule_estimate' && <p className="region-note">* {t('N/H/Cは疎水性に基づく探索的な領域推定です。TSignalの領域予測とは別の方法です。', 'N/H/C are exploratory hydropathy-based boundaries, independent of TSignal.')}</p>}
+      {intervals && estimates && result.regions.basis === 'rule_estimate' && <p className="region-note">* {t('N/H/C：疎水性の規則による領域推定', 'N/H/C: rule-estimated from hydropathy')}</p>}
       <div className="viewport-controls"><span>{t('表示位置', 'Visible positions')}: <b>{viewport.join('–')}</b> / {length}</span><div className="button-group"><button data-ux="sequenceviewer-button-007" disabled={viewport[0] === 1} onClick={() => pan(-1)} aria-label={t('前の範囲', 'Previous interval')}>←</button><button data-ux="sequenceviewer-button-008" disabled={viewport[1] === length} onClick={() => pan(1)} aria-label={t('次の範囲', 'Next interval')}>→</button><button data-ux="sequenceviewer-button-009" onClick={() => onViewport(focusViewport(selection, length))}>{t('選択範囲に合わせる', 'Fit selection')}</button><button data-ux="sequenceviewer-button-010" onClick={() => onViewport([1, Math.min(length, 70)])}>{t('N末端へ', 'N-terminus')}</button></div></div>
-      {groups.length > 0 ? <div className={`residue-view ${estimates && result.regions.basis === 'rule_estimate' ? 'estimated' : ''}`} aria-label={t('残基を選択。Shiftを押しながらクリックで範囲を選択。', 'Select a residue. Shift-click to extend the selection.')}>
-        {groups.map(group => <div className="residue-row" key={group[0].position}><span className="row-coordinate">{group[0].position}</span><div className="residues">{group.map(p => {
-          const rel = relativePosition(p.position, cut);
-          const inRange = p.position >= selection[0] && p.position <= selection[1];
-          return <button data-ux="sequenceviewer-button-011" key={p.position} className={`residue region-${estimates || result.regions.basis !== 'rule_estimate' ? p.region : 'unknown'}${inRange ? ' in-range' : ''}${selected === p.position ? ' selected' : ''}${p.position === cut ? ' cleavage-edge' : ''}`} aria-pressed={selected === p.position} aria-label={`${p.position} ${p.residue}${rel != null ? ` (${rel > 0 ? '+' : ''}${rel})` : ''}`} onClick={e => onSelect(p.position, e.shiftKey)}>
-            <span className="residue-position">{p.position}</span><b>{p.residue}</b><span className={`residue-relative${rel === -3 || rel === -1 || rel === 1 ? ' key-site' : ''}`}>{rel != null && Math.abs(rel) <= 6 ? `${rel > 0 ? '+' : ''}${rel}` : '·'}</span>
-          </button>;
-        })}</div><span className="row-coordinate end">{group.at(-1)!.position}</span></div>)}
-      </div> : <p className="notice">{t('広い範囲をグラフで表示しています。残基文字を読むには、範囲を180残基以内に絞ってください。', 'Wide interval shown as tracks. Narrow to 180 residues or fewer to show residue letters.')}</p>}
-
+      <div className="sequence-map" aria-label={t('領域と残基の共通座標図', 'Aligned region and residue map')}>
+        <div className="region-band-row">{bands.map(b => {const a=Math.max(b.range[0],viewport[0]), end=Math.min(b.range[1],viewport[1]);return a<=end && <button data-ux="sequenceviewer-button-band" key={b.kind} className={`region-band region-${b.kind}`} style={bandStyle(a,end)} onClick={()=>onRange(b.range)} title={`${b.name} ${b.range.join('–')}`}>{b.name}</button>;})}</div>
+        {estimates && intervals && <div className="subregion-band-row">{Object.entries(intervals).map(([key,range])=>{const a=Math.max(range[0],viewport[0]),end=Math.min(range[1],viewport[1]);return a<=end && <button data-ux="sequenceviewer-button-subregion" key={key} className={`region-band region-${key}`} style={bandStyle(a,end)} onClick={()=>onRange(range as Interval)} aria-label={`${key} ${range.join('–')} · ${basisLabel(result.regions.basis,t)}`}>{key}{result.regions.basis==='rule_estimate'?'*':''}</button>;})}</div>}
+        <div className="aligned-residues" ref={stripRef}>{showLetters ? visible.map(p=>{const rel=relativePosition(p.position,cut);return <button data-ux="sequenceviewer-button-011" key={p.position} className={`residue region-${estimates || result.regions.basis !== 'rule_estimate' ? p.region : 'unknown'}${p.position>=selection[0]&&p.position<=selection[1]?' in-range':''}${selected===p.position?' selected':''}`} style={{left:`${xPercent(p.position)}%`}} aria-pressed={selected===p.position} aria-label={`${p.position} ${p.residue}${rel!=null?` (${rel>0?'+':''}${rel})`:''}`} onClick={e=>onSelect(p.position,e.shiftKey)}><span className="residue-position">{p.position}</span><b>{p.residue}</b><span className="residue-relative">{rel!=null&&Math.abs(rel)<=6?`${rel>0?'+':''}${rel}`:''}</span></button>}) : <div className="sequence-ruler"><span>{viewport[0]}</span><button data-ux="sequenceviewer-button-zoom" onClick={()=>onViewport([Math.max(1,selected-4),Math.min(length,selected+5)])}>{t('残基が読める大きさに拡大', 'Zoom to read residues')}</button><span>{viewport[1]}</span></div>}</div>
+      </div>
+      <p className="map-reading-hint">{t('上下の図は同じ残基位置です。図の点を選ぶと、値と出所を確認できます。', 'Positions align vertically. Select a point to inspect its value and source.')}</p>
+    <section className="tracks-panel" aria-label={t('位置に沿った物性', 'Properties along the sequence')}>      <details className="track-options"><summary data-ux="sequenceviewer-summary-tracks">{t('表示する物性・領域の設定', 'Property & region display settings')}<span>{tracks.length} {t('物性', 'properties')}</span></summary><div className="track-selector">{properties.slice(0, 6).map(key => <label className="checkbox" key={key}><input data-ux="sequenceviewer-input-012" type="checkbox" checked={tracks.includes(key)} onChange={e => onTracks(e.target.checked ? [...tracks, key] : tracks.filter(k => k !== key))} />{t(scales[key].ja, scales[key].en)}</label>)}</div>        <label className="checkbox"><input data-ux="sequenceviewer-input-001" type="checkbox" checked={estimates} onChange={e => onEstimates(e.target.checked)} />{t('規則による領域推定を表示', 'Show rule-estimated regions')}</label></details>
+      <div id="profile-tracks">{tracks.map(key => <PropertyTrack key={key} result={result} property={key} viewport={viewport} selected={selected} selection={selection} onSelect={onSelect} t={t} />)}</div>
+      {tracks.length === 0 && <p className="notice">{t('表示する物性を上のチェックボックスで選んでください。', 'Select at least one property track above.')}</p>}
+      <p className="muted">{t('残基ごとの尺度値 · 縦軸は全配列を基準に固定', 'Per-residue coefficients · Y-axes fixed to the full sequence')}</p>
+    </section>
     </section>
     <aside className="inspection-grid" aria-label={t('選択位置の詳細', 'Selection details')}>
       <section className="panel residue-inspector"><div className="panel-heading"><h2>{t('選択残基', 'Selected residue')}</h2><span className="coordinate-value">{selected} · <b>{row.residue}</b>{relativePosition(selected, cut) != null && <span> ({Number(relativePosition(selected, cut)) > 0 ? '+' : ''}{relativePosition(selected, cut)})</span>}</span></div>
@@ -85,17 +95,13 @@ export function SequenceViewer({ result, selected, selection, viewport, estimate
         <details className="inspector-methods"><summary data-ux="sequenceviewer-summary-sources">{t('尺度の定義・出所', 'Scale definitions & sources')}</summary>{properties.slice(0,6).map(key => <p key={key}><b>{t(scales[key].ja,scales[key].en)}</b><br/>{t(scales[key].note,scales[key].noteEn)}<br/>{sourceURL(scales[key].code||'') ? <a data-ux="sequenceviewer-a-inspector-source" href={sourceURL(scales[key].code||'') || undefined} target="_blank" rel="noreferrer">{scales[key].source} · {scales[key].code}</a> : scales[key].source}</p>)}</details>
         {row.structure ? <div className="structure-note"><h3>{t('外部の構造注釈', 'Imported structure annotation')}</h3><dl className="value-list">{Object.entries(row.structure).filter(([key]) => !['basis', 'source'].includes(key)).map(([key, value]) => <div key={key}><dt>{key === 'rsa' ? t('相対溶媒露出度', 'Relative solvent accessibility') : key === 'disorder' ? t('無秩序の注釈', 'Disorder annotation') : key === 'secondary_structure' ? t('二次構造', 'Secondary structure') : key}</dt><dd>{formatValue(value)}</dd></div>)}</dl><p>{String(row.structure.source)} · {basisLabel(String(row.structure.basis), t)}</p></div> : <div className="structure-empty"><p className="muted">{t('構造注釈なし · 露出度と実際の剛直性は未評価', 'No structure annotation · exposure and physical rigidity unassessed')}</p>{onEdit && <button data-ux="sequenceviewer-button-add-structure" className="text-button" onClick={() => onEdit?.('structure')}>{t('構造注釈を追加', 'Add structure annotation')}</button>}</div>}
       </section>
-      <section className="panel"><div className="panel-heading"><h2>{t('選択範囲の集計', 'Selected interval summary')}</h2><span className="coordinate-value">{selection.join('–')} · {selection[1] - selection[0] + 1} aa</span></div>
+      <details className="panel interval-inspector"><summary data-ux="sequenceviewer-summary-aggregate">{t('選択範囲の集計', 'Selected interval summary')} · {selection.join('–')}</summary><div className="panel-heading"><h2>{t('選択範囲の集計', 'Selected interval summary')}</h2><span className="coordinate-value">{selection.join('–')} · {selection[1] - selection[0] + 1} aa</span></div>
         <p className="muted">{t('選択範囲の算術平均 · 尺度値', 'Arithmetic means over the selection · scale units')}</p>
         <dl className="value-list">{properties.slice(0, 6).map(key => <div key={key}><dt>{t(scales[key].ja, scales[key].en)}<small>{t('平均', 'mean')}</small></dt><dd>{formatValue(summary[key])}<small>{t('尺度値', 'scale units')}</small></dd></div>)}</dl>
         <details><summary data-ux="sequenceviewer-summary-013">{t('選択範囲の配列', 'Selected sequence')}</summary><code className="sequence-text">{result.sequence.slice(selection[0] - 1, selection[1])}</code></details>
-      </section>
+      </details>
     </aside>
-    <section className="panel tracks-panel"><h2>{t('位置に沿った物性', 'Properties along the sequence')}</h2>      <details className="track-options"><summary data-ux="sequenceviewer-summary-tracks">{t('表示する物性・領域の設定', 'Property & region display settings')}<span>{tracks.length} {t('物性', 'properties')}</span></summary><div className="track-selector">{properties.slice(0, 6).map(key => <label className="checkbox" key={key}><input data-ux="sequenceviewer-input-012" type="checkbox" checked={tracks.includes(key)} onChange={e => onTracks(e.target.checked ? [...tracks, key] : tracks.filter(k => k !== key))} />{t(scales[key].ja, scales[key].en)}</label>)}</div>        <label className="checkbox"><input data-ux="sequenceviewer-input-001" type="checkbox" checked={estimates} onChange={e => onEstimates(e.target.checked)} />{t('規則による領域推定を表示', 'Show rule-estimated regions')}</label></details>
-      <div id="profile-tracks">{tracks.map(key => <PropertyTrack key={key} result={result} property={key} viewport={viewport} selected={selected} selection={selection} onSelect={onSelect} t={t} />)}</div>
-      {tracks.length === 0 && <p className="notice">{t('表示する物性を上のチェックボックスで選んでください。', 'Select at least one property track above.')}</p>}
-      <p className="muted">{t('残基ごとの尺度値 · 縦軸は全配列を基準に固定', 'Per-residue coefficients · Y-axes fixed to the full sequence')}</p>
-    </section>
+
   </div>;
 }
 

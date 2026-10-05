@@ -5,6 +5,16 @@
     "element": "input"
   },
   {
+    "id": "app-input-011",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-summary-013",
+    "component": "App",
+    "element": "summary"
+  },
+  {
     "id": "app-a-002",
     "component": "App",
     "element": "a"
@@ -25,6 +35,11 @@
     "element": "button"
   },
   {
+    "id": "app-button-retry",
+    "component": "App",
+    "element": "button"
+  },
+  {
     "id": "app-textarea-006",
     "component": "App",
     "element": "textarea"
@@ -33,6 +48,21 @@
     "id": "app-button-007",
     "component": "App",
     "element": "button"
+  },
+  {
+    "id": "app-select-008",
+    "component": "App",
+    "element": "select"
+  },
+  {
+    "id": "app-input-011",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-summary-coordinate",
+    "component": "App",
+    "element": "summary"
   },
   {
     "id": "app-button-024",
@@ -45,29 +75,14 @@
     "element": "button"
   },
   {
-    "id": "app-select-008",
-    "component": "App",
-    "element": "select"
-  },
-  {
-    "id": "app-summary-010",
+    "id": "app-summary-013",
     "component": "App",
     "element": "summary"
-  },
-  {
-    "id": "app-input-011",
-    "component": "App",
-    "element": "input"
   },
   {
     "id": "app-select-012",
     "component": "App",
     "element": "select"
-  },
-  {
-    "id": "app-summary-013",
-    "component": "App",
-    "element": "summary"
   },
   {
     "id": "app-input-009",
@@ -360,9 +375,39 @@
     "element": "button"
   },
   {
+    "id": "sequenceviewer-button-band",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-subregion",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
     "id": "sequenceviewer-button-011",
     "component": "SequenceViewer",
     "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-zoom",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-summary-tracks",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-input-012",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-input-001",
+    "component": "SequenceViewer",
+    "element": "input"
   },
   {
     "id": "sequenceviewer-summary-sources",
@@ -380,24 +425,14 @@
     "element": "button"
   },
   {
+    "id": "sequenceviewer-summary-aggregate",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
     "id": "sequenceviewer-summary-013",
     "component": "SequenceViewer",
     "element": "summary"
-  },
-  {
-    "id": "sequenceviewer-summary-tracks",
-    "component": "SequenceViewer",
-    "element": "summary"
-  },
-  {
-    "id": "sequenceviewer-input-012",
-    "component": "SequenceViewer",
-    "element": "input"
-  },
-  {
-    "id": "sequenceviewer-input-001",
-    "component": "SequenceViewer",
-    "element": "input"
   },
   {
     "id": "sequenceviewer-a-014",
