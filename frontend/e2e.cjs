@@ -76,7 +76,7 @@ const assert=require('node:assert/strict');
   await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
   const mobileSequence=await page.locator('.sequence-panel').boundingBox(), mobileInspector=await page.locator('.residue-inspector').boundingBox(), mobileTracks=await page.locator('.tracks-panel').boundingBox();
   assert(mobileInspector.y>=mobileSequence.y+mobileSequence.height && mobileTracks.y>=mobileSequence.y);
-  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'test-artifacts/result-mobile.png',fullPage:true});
+  await page.locator('.export-menu summary').click();await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'test-artifacts/result-mobile.png',fullPage:true});
   const zoom=page.getByRole('button',{name:'残基が読める大きさに拡大',exact:true});if(await zoom.isVisible())await zoom.click();
   assert(await page.locator('.aligned-residues .residue').count()>0);
   const letters=await page.locator('.aligned-residues').boundingBox(),track=await page.locator('.property-track svg').first().boundingBox();
