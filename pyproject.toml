@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "signal-peptide-features"
-version = "0.2.0"
+version = "0.3.0"
 description = "Lightweight sequence-derived signal peptide feature calculation"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -15,10 +15,14 @@ sp-features = "signal_peptide_features.cli:main"
 
 [project.optional-dependencies]
 plots = ["matplotlib>=3.9,<4"]
+gui = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1"]
 dev = ["pytest>=8.3,<9", "ruff>=0.9,<1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+signal_peptide_features = ["scales.json", "usage-contract.json", "usage.sql", "web/*", "web/assets/*"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

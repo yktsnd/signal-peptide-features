@@ -1,0 +1,522 @@
+[
+  {
+    "id": "app-input-001",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-input-011",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-summary-013",
+    "component": "App",
+    "element": "summary"
+  },
+  {
+    "id": "app-a-002",
+    "component": "App",
+    "element": "a"
+  },
+  {
+    "id": "app-button-003",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-004",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-005",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-retry",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-textarea-006",
+    "component": "App",
+    "element": "textarea"
+  },
+  {
+    "id": "app-button-007",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-select-008",
+    "component": "App",
+    "element": "select"
+  },
+  {
+    "id": "app-input-011",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-summary-coordinate",
+    "component": "App",
+    "element": "summary"
+  },
+  {
+    "id": "app-button-024",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-025",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-summary-013",
+    "component": "App",
+    "element": "summary"
+  },
+  {
+    "id": "app-select-012",
+    "component": "App",
+    "element": "select"
+  },
+  {
+    "id": "app-input-009",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-select-014",
+    "component": "App",
+    "element": "select"
+  },
+  {
+    "id": "app-input-015",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-input-016",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-input-017",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-input-018",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-button-019",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-020",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-summary-021",
+    "component": "App",
+    "element": "summary"
+  },
+  {
+    "id": "app-input-022",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-input-023",
+    "component": "App",
+    "element": "input"
+  },
+  {
+    "id": "app-button-026",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-summary-interpretation",
+    "component": "App",
+    "element": "summary"
+  },
+  {
+    "id": "app-a-027",
+    "component": "App",
+    "element": "a"
+  },
+  {
+    "id": "app-button-028",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "workspace-summary-001",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-button-002",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-003",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-summary-conflict",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-button-005",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-summary-006",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-button-007",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-008",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-009",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-010",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-011",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-012",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-select-013",
+    "component": "Workspace",
+    "element": "select"
+  },
+  {
+    "id": "workspace-select-014",
+    "component": "Workspace",
+    "element": "select"
+  },
+  {
+    "id": "workspace-select-015",
+    "component": "Workspace",
+    "element": "select"
+  },
+  {
+    "id": "workspace-input-016",
+    "component": "Workspace",
+    "element": "input"
+  },
+  {
+    "id": "workspace-input-017",
+    "component": "Workspace",
+    "element": "input"
+  },
+  {
+    "id": "workspace-button-018",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-019",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-020",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-021",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-button-mobile-index",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-a-022",
+    "component": "Workspace",
+    "element": "a"
+  },
+  {
+    "id": "workspace-summary-methods",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-summary-023",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-summary-024",
+    "component": "Workspace",
+    "element": "summary"
+  },
+  {
+    "id": "workspace-button-025",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
+    "id": "workspace-a-026",
+    "component": "Workspace",
+    "element": "a"
+  },
+  {
+    "id": "workspace-select-027",
+    "component": "Workspace",
+    "element": "select"
+  },
+  {
+    "id": "workspace-input-028",
+    "component": "Workspace",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-svg-001",
+    "component": "SequenceViewer",
+    "element": "svg"
+  },
+  {
+    "id": "sequenceviewer-button-002",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-plus1",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-003",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-summary-range",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-input-004",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-input-005",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-button-006",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-add-cut",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-007",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-008",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-009",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-010",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-band",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-subregion",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-011",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-zoom",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-summary-tracks",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-input-012",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-input-001",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-summary-sources",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-a-inspector-source",
+    "component": "SequenceViewer",
+    "element": "a"
+  },
+  {
+    "id": "sequenceviewer-button-add-structure",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-summary-aggregate",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-summary-013",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-a-014",
+    "component": "SequenceViewer",
+    "element": "a"
+  },
+  {
+    "id": "sequenceviewer-svg-002",
+    "component": "SequenceViewer",
+    "element": "svg"
+  },
+  {
+    "id": "sequenceviewer-summary-method",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "guide-a-001",
+    "component": "Guide",
+    "element": "a"
+  },
+  {
+    "id": "guide-a-002",
+    "component": "Guide",
+    "element": "a"
+  },
+  {
+    "id": "guide-a-003",
+    "component": "Guide",
+    "element": "a"
+  },
+  {
+    "id": "usagesettings-summary-policy",
+    "component": "UsageSettings",
+    "element": "summary"
+  },
+  {
+    "id": "usagesettings-button-001",
+    "component": "UsageSettings",
+    "element": "button"
+  },
+  {
+    "id": "usagesettings-button-002",
+    "component": "UsageSettings",
+    "element": "button"
+  },
+  {
+    "id": "usagesettings-button-003",
+    "component": "UsageSettings",
+    "element": "button"
+  },
+  {
+    "id": "usagesettings-button-004",
+    "component": "UsageSettings",
+    "element": "button"
+  },
+  {
+    "id": "usagesettings-summary-005",
+    "component": "UsageSettings",
+    "element": "summary"
+  },
+  {
+    "id": "usagesettings-select-006",
+    "component": "UsageSettings",
+    "element": "select"
+  },
+  {
+    "id": "usagesettings-select-007",
+    "component": "UsageSettings",
+    "element": "select"
+  },
+  {
+    "id": "usagesettings-select-008",
+    "component": "UsageSettings",
+    "element": "select"
+  },
+  {
+    "id": "usagesettings-button-009",
+    "component": "UsageSettings",
+    "element": "button"
+  },
+  {
+    "id": "usagesettings-button-010",
+    "component": "UsageSettings",
+    "element": "button"
+  }
+]

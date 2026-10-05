@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Content-free usage event 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "session",
+    "seq",
+    "at",
+    "schema",
+    "ui",
+    "event",
+    "target",
+    "props"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "session": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "at": {
+      "type": "integer"
+    },
+    "schema": {
+      "const": "1.0"
+    },
+    "ui": {
+      "const": "0.7"
+    },
+    "event": {
+      "enum": [
+        "ui_activate",
+        "ui_input",
+        "ui_focus",
+        "ui_disabled",
+        "ui_scroll",
+        "analysis_started",
+        "analysis_completed",
+        "analysis_failed",
+        "analysis_cancelled",
+        "import_completed",
+        "import_failed",
+        "export_requested",
+        "export_generated",
+        "export_failed",
+        "view_changed",
+        "selection_changed",
+        "viewport_changed",
+        "filter_changed",
+        "track_changed",
+        "annotation_changed",
+        "feedback_submitted",
+        "performance",
+        "transport_summary",
+        "session_started",
+        "ui_hover",
+        "ui_blur",
+        "view_duration",
+        "ui_toggle"
+      ]
+    },
+    "target": {
+      "enum": [
+        "app",
+        "analysis",
+        "import",
+        "export",
+        "view",
+        "selection",
+        "viewport",
+        "filters",
+        "tracks",
+        "annotations",
+        "feedback",
+        "performance",
+        "transport"
+      ]
+    },
+    "props": {
+      "type": "object",
+      "maxProperties": 20,
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "success",
+            "failed",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "modality": {
+          "type": "string",
+          "enum": [
+            "mouse",
+            "touch",
+            "pen",
+            "keyboard",
+            "system",
+            "unknown"
+          ]
+        },
+        "screen": {
+          "type": "string",
+          "enum": [
+            "input",
+            "sequence",
+            "metrics",
+            "evidence",
+            "index",
+            "help",
+            "unknown"
+          ]
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en",
+            "unknown"
+          ]
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large",
+            "unknown"
+          ]
+        },
+        "execution": {
+          "type": "string",
+          "enum": [
+            "browser",
+            "server",
+            "unknown"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "precursor",
+            "sp",
+            "whole",
+            "SP",
+            "N",
+            "H",
+            "C",
+            "junction",
+            "mature",
+            "structure",
+            "other",
+            "all"
+          ]
+        },
+        "property": {
+          "type": "string",
+          "enum": [
+            "hydrophobicity",
+            "charge",
+            "flexibility",
+            "polarity",
+            "volume",
+            "helix",
+            "composition",
+            "entropy",
+            "moment",
+            "other",
+            "all"
+          ]
+        },
+        "process": {
+          "type": "string",
+          "enum": [
+            "targeting",
+            "orientation",
+            "translocation",
+            "recognition",
+            "accessibility",
+            "selection",
+            "other",
+            "all"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "fasta",
+            "result",
+            "structure",
+            "prediction",
+            "json",
+            "csv",
+            "svg",
+            "html",
+            "print",
+            "other"
+          ]
+        },
+        "error": {
+          "type": "string",
+          "enum": [
+            "validation",
+            "network",
+            "runtime",
+            "storage",
+            "unknown"
+          ]
+        },
+        "bucket": {
+          "type": "string",
+          "enum": [
+            "empty",
+            "short",
+            "medium",
+            "long",
+            "very_long",
+            "unknown"
+          ]
+        },
+        "basis": {
+          "type": "string",
+          "enum": [
+            "provided",
+            "predicted",
+            "rule_estimate",
+            "unknown",
+            "other"
+          ]
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "available",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "task": {
+          "type": "string",
+          "enum": [
+            "inspect_plus1",
+            "aggregate_interval",
+            "inspect_source",
+            "save_restore",
+            "other"
+          ]
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ]
+        },
+        "position": {
+          "type": "string",
+          "enum": [
+            "junction",
+            "sp",
+            "mature",
+            "unknown"
+          ]
+        },
+        "metric": {
+          "type": "string",
+          "enum": [
+            "lcp",
+            "inp",
+            "cls",
+            "navigation",
+            "long_task",
+            "event_latency"
+          ]
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "enabled": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no"
+          ]
+        },
+        "duration_ms": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 3600000
+        },
+        "count": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "hits": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "dropped": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "retried": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 3600000
+        },
+        "filled": {
+          "type": "boolean"
+        },
+        "known_cut": {
+          "type": "boolean"
+        },
+        "estimated": {
+          "type": "boolean"
+        },
+        "extend": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "control": {
+          "type": "string",
+          "enum": [
+            "app-input-001",
+            "app-input-011",
+            "app-summary-013",
+            "app-a-002",
+            "app-button-003",
+            "app-button-004",
+            "app-button-005",
+            "app-button-retry",
+            "app-textarea-006",
+            "app-button-007",
+            "app-select-008",
+            "app-input-011",
+            "app-summary-coordinate",
+            "app-button-024",
+            "app-button-025",
+            "app-summary-013",
+            "app-select-012",
+            "app-input-009",
+            "app-select-014",
+            "app-input-015",
+            "app-input-016",
+            "app-input-017",
+            "app-input-018",
+            "app-button-019",
+            "app-button-020",
+            "app-summary-021",
+            "app-input-022",
+            "app-input-023",
+            "app-button-026",
+            "app-summary-interpretation",
+            "app-a-027",
+            "app-button-028",
+            "workspace-summary-001",
+            "workspace-button-002",
+            "workspace-button-003",
+            "workspace-summary-conflict",
+            "workspace-button-005",
+            "workspace-summary-006",
+            "workspace-button-007",
+            "workspace-button-008",
+            "workspace-button-009",
+            "workspace-button-010",
+            "workspace-button-011",
+            "workspace-button-012",
+            "workspace-select-013",
+            "workspace-select-014",
+            "workspace-select-015",
+            "workspace-input-016",
+            "workspace-input-017",
+            "workspace-button-018",
+            "workspace-button-019",
+            "workspace-button-020",
+            "workspace-button-021",
+            "workspace-button-mobile-index",
+            "workspace-a-022",
+            "workspace-summary-methods",
+            "workspace-summary-023",
+            "workspace-summary-024",
+            "workspace-button-025",
+            "workspace-a-026",
+            "workspace-select-027",
+            "workspace-input-028",
+            "sequenceviewer-svg-001",
+            "sequenceviewer-button-002",
+            "sequenceviewer-button-plus1",
+            "sequenceviewer-button-003",
+            "sequenceviewer-summary-range",
+            "sequenceviewer-input-004",
+            "sequenceviewer-input-005",
+            "sequenceviewer-button-006",
+            "sequenceviewer-button-add-cut",
+            "sequenceviewer-button-007",
+            "sequenceviewer-button-008",
+            "sequenceviewer-button-009",
+            "sequenceviewer-button-010",
+            "sequenceviewer-button-band",
+            "sequenceviewer-button-subregion",
+            "sequenceviewer-button-011",
+            "sequenceviewer-button-zoom",
+            "sequenceviewer-summary-tracks",
+            "sequenceviewer-input-012",
+            "sequenceviewer-input-001",
+            "sequenceviewer-summary-sources",
+            "sequenceviewer-a-inspector-source",
+            "sequenceviewer-button-add-structure",
+            "sequenceviewer-summary-aggregate",
+            "sequenceviewer-summary-013",
+            "sequenceviewer-a-014",
+            "sequenceviewer-svg-002",
+            "sequenceviewer-summary-method",
+            "guide-a-001",
+            "guide-a-002",
+            "guide-a-003",
+            "usagesettings-summary-policy",
+            "usagesettings-button-001",
+            "usagesettings-button-002",
+            "usagesettings-button-003",
+            "usagesettings-button-004",
+            "usagesettings-summary-005",
+            "usagesettings-select-006",
+            "usagesettings-select-007",
+            "usagesettings-select-008",
+            "usagesettings-button-009",
+            "usagesettings-button-010"
+          ]
+        }
+      }
+    }
+  }
+}

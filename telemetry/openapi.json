@@ -1,0 +1,135 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Signal Peptide Explorer usage API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/telemetry/config": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Availability and retention policy"
+          }
+        }
+      }
+    },
+    "/api/telemetry/sessions": {
+      "post": {
+        "description": "Create a stream after visitor opt-in; body contains UUID id, 64-hex token and consent=\"1\".",
+        "responses": {
+          "200": {
+            "description": "Stream expiry"
+          },
+          "409": {
+            "description": "Expired or revoked"
+          }
+        }
+      }
+    },
+    "/api/telemetry/sessions/{id}/events": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "post": {
+        "security": [
+          {
+            "streamToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "events"
+                ],
+                "properties": {
+                  "events": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "$ref": "./event.schema.json"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Acknowledged event IDs"
+          },
+          "400": {
+            "description": "Invalid batch"
+          },
+          "401": {
+            "description": "Invalid stream token"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/api/telemetry/sessions/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "delete": {
+        "security": [
+          {
+            "streamToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual events deleted and stream revoked"
+          }
+        }
+      }
+    },
+    "/api/telemetry/report": {
+      "get": {
+        "description": "Hosted: server-authorized Site owner identity. Native: loopback-only GUI.",
+        "responses": {
+          "200": {
+            "description": "Bounded summary or session timeline"
+          },
+          "403": {
+            "description": "Owner sign-in required"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "streamToken": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

@@ -2,15 +2,38 @@
 
 [日本語](README.ja.md) · [Methods & descriptor dictionary](docs/methods.md)
 
-**What does a signal-peptide mutation change — and does that answer depend on your region annotation?**
+**Explore one signal peptide in its precursor context, with transparent evidence.**
+
+UI 0.4 separates input from results and organizes the result into sequence/cleavage,
+metrics, evidence/settings and a descriptor index. Select full intervals, navigate the
+precursor, and inspect multiple property tracks with shared coordinates and stable axes.
+Metrics expose units, intervals, definitions and sources. The physiological matrix is
+a classification index, not a score or count display. Comparison stays in Advanced.
+Save/restoration uses JSON; filtered/all metrics use CSV; figures use SVG; an offline
+HTML report includes all descriptors and settings. Existing Python/CLI APIs remain available.
+
+```bash
+# From the repository directory
+pip install -e '.[gui]'
+sp-features gui
+# Open http://127.0.0.1:8765
+```
+
+Unlike general peptide descriptors in [peptides.py](https://peptides.readthedocs.io/),
+this project specializes in SP regions and the cleavage junction. Missing annotations
+are automatically filled by TSignal **after model setup**. Without setup, they remain
+unknown. Sequence properties do not predict secretion yield or cleavage efficiency.
+See [GUI and TSignal setup](docs/explorer.md) for coordinates, import formats and limits.
+
 
 A NumPy-only Python library for interpretable sequence descriptors, paired mutation
 maps, annotation sensitivity, composition-preserving order controls, and descriptor
 double-mutant cycles. You supply the SP sequences and region annotations. Every CLI
 result retains the sequence, coordinates and source.
 
-These calculations describe sequences. Secretion yield, the best SP, cleavage sites,
-and biological epistasis are not predicted. No OrthoSignal code, datasets, labels,
+These calculations describe sequences. Secretion yield, the best SP,
+and biological epistasis are not predicted. The optional TSignal adapter supplies
+predicted SP presence, type and cleavage annotations. No OrthoSignal code, datasets, labels,
 weights or experimental benchmarks are included.
 
 ## A hand-checkable ambiguity
@@ -154,3 +177,8 @@ Original code is MIT licensed. Source-derived scales retain attribution. Their
 redistribution treatment, and that of the small independent AAindex fixture, needs
 human review before public package release. No external weights, experimental datasets
 or copied software are included.
+
+
+UI 0.5 adds opt-in, content-free usage recording, deletion controls and an owner/local administrator report. See [usage analytics](docs/usage-analytics.md) for the event inventory, retention, validation and limits.
+
+UI 0.6 places sequence and selection details together, reduces initial text, and adds narrow-screen metric/index views. See [UI changes and validation](docs/ui-06.md).

@@ -1,0 +1,24 @@
+{
+  "name": "signal-peptide-explorer",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "test:browser": "node e2e.cjs",
+    "test:gui": "node tests/check-ui.mjs",
+    "test:usage": "node ../telemetry/tests.mjs"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "playwright": "1.51.1",
+    "pyodide": "0.28.3",
+    "typescript": "^5.8.0",
+    "vite": "^6.3.0"
+  }
+}

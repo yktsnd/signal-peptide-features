@@ -1,5 +1,6 @@
 """Pure sequence-derived feature functions for signal peptides."""
 
+from .analysis import analyze_sequence
 from .charge import charge_features
 from .cleavage import cleavage_features
 from .composition import amino_acid_composition, sequence_entropy
@@ -14,6 +15,7 @@ from .regions import normalize_sequence, split_by_boundaries, split_fractional_r
 from .sensitivity import RegionAnnotation, boundary_sensitivity, mutation_effects
 
 __all__ = [
+    "analyze_sequence",
     "Substitution",
     "composition_controls",
     "interaction_effects",
