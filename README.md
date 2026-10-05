@@ -180,3 +180,5 @@ or copied software are included.
 
 
 UI 0.5 adds opt-in, content-free usage recording, deletion controls and an owner/local administrator report. See [usage analytics](docs/usage-analytics.md) for the event inventory, retention, validation and limits.
+
+UI 0.6 places sequence and selection details together, reduces initial text, and adds narrow-screen metric/index views. See [UI changes and validation](docs/ui-06.md).

@@ -35,14 +35,19 @@
     "element": "button"
   },
   {
+    "id": "app-button-024",
+    "component": "App",
+    "element": "button"
+  },
+  {
+    "id": "app-button-025",
+    "component": "App",
+    "element": "button"
+  },
+  {
     "id": "app-select-008",
     "component": "App",
     "element": "select"
-  },
-  {
-    "id": "app-input-009",
-    "component": "App",
-    "element": "input"
   },
   {
     "id": "app-summary-010",
@@ -63,6 +68,11 @@
     "id": "app-summary-013",
     "component": "App",
     "element": "summary"
+  },
+  {
+    "id": "app-input-009",
+    "component": "App",
+    "element": "input"
   },
   {
     "id": "app-select-014",
@@ -115,19 +125,14 @@
     "element": "input"
   },
   {
-    "id": "app-button-024",
-    "component": "App",
-    "element": "button"
-  },
-  {
-    "id": "app-button-025",
-    "component": "App",
-    "element": "button"
-  },
-  {
     "id": "app-button-026",
     "component": "App",
     "element": "button"
+  },
+  {
+    "id": "app-summary-interpretation",
+    "component": "App",
+    "element": "summary"
   },
   {
     "id": "app-a-027",
@@ -155,9 +160,9 @@
     "element": "button"
   },
   {
-    "id": "workspace-button-004",
+    "id": "workspace-summary-conflict",
     "component": "Workspace",
-    "element": "button"
+    "element": "summary"
   },
   {
     "id": "workspace-button-005",
@@ -245,9 +250,19 @@
     "element": "button"
   },
   {
+    "id": "workspace-button-mobile-index",
+    "component": "Workspace",
+    "element": "button"
+  },
+  {
     "id": "workspace-a-022",
     "component": "Workspace",
     "element": "a"
+  },
+  {
+    "id": "workspace-summary-methods",
+    "component": "Workspace",
+    "element": "summary"
   },
   {
     "id": "workspace-summary-023",
@@ -280,11 +295,6 @@
     "element": "input"
   },
   {
-    "id": "sequenceviewer-input-001",
-    "component": "SequenceViewer",
-    "element": "input"
-  },
-  {
     "id": "sequenceviewer-svg-001",
     "component": "SequenceViewer",
     "element": "svg"
@@ -295,9 +305,19 @@
     "element": "button"
   },
   {
+    "id": "sequenceviewer-button-plus1",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
     "id": "sequenceviewer-button-003",
     "component": "SequenceViewer",
     "element": "button"
+  },
+  {
+    "id": "sequenceviewer-summary-range",
+    "component": "SequenceViewer",
+    "element": "summary"
   },
   {
     "id": "sequenceviewer-input-004",
@@ -311,6 +331,11 @@
   },
   {
     "id": "sequenceviewer-button-006",
+    "component": "SequenceViewer",
+    "element": "button"
+  },
+  {
+    "id": "sequenceviewer-button-add-cut",
     "component": "SequenceViewer",
     "element": "button"
   },
@@ -340,14 +365,39 @@
     "element": "button"
   },
   {
-    "id": "sequenceviewer-input-012",
+    "id": "sequenceviewer-summary-sources",
     "component": "SequenceViewer",
-    "element": "input"
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-a-inspector-source",
+    "component": "SequenceViewer",
+    "element": "a"
+  },
+  {
+    "id": "sequenceviewer-button-add-structure",
+    "component": "SequenceViewer",
+    "element": "button"
   },
   {
     "id": "sequenceviewer-summary-013",
     "component": "SequenceViewer",
     "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-summary-tracks",
+    "component": "SequenceViewer",
+    "element": "summary"
+  },
+  {
+    "id": "sequenceviewer-input-012",
+    "component": "SequenceViewer",
+    "element": "input"
+  },
+  {
+    "id": "sequenceviewer-input-001",
+    "component": "SequenceViewer",
+    "element": "input"
   },
   {
     "id": "sequenceviewer-a-014",
@@ -358,6 +408,11 @@
     "id": "sequenceviewer-svg-002",
     "component": "SequenceViewer",
     "element": "svg"
+  },
+  {
+    "id": "sequenceviewer-summary-method",
+    "component": "SequenceViewer",
+    "element": "summary"
   },
   {
     "id": "guide-a-001",
@@ -373,6 +428,11 @@
     "id": "guide-a-003",
     "component": "Guide",
     "element": "a"
+  },
+  {
+    "id": "usagesettings-summary-policy",
+    "component": "UsageSettings",
+    "element": "summary"
   },
   {
     "id": "usagesettings-button-001",

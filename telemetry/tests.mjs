@@ -17,7 +17,7 @@ class DB{
  prepare(sql){const db=this;return {sql,params:[],bind(...params){return {...this,params};},async first(){return db.sql({items:[this]})[0].results[0]||null;},async all(){return db.sql({items:[this]})[0];},async run(){return db.sql({items:[this]})[0];}};}
  async batch(items){return this.sql({items});}
 }
-const event=()=>({id:randomUUID(),session:randomUUID(),seq:1,at:Date.now(),schema:'1.0',ui:'0.5',event:'analysis_completed',target:'analysis',props:{outcome:'success',screen:'sequence',duration_ms:12,known_cut:true}});
+const event=()=>({id:randomUUID(),session:randomUUID(),seq:1,at:Date.now(),schema:'1.0',ui:contract.ui_version,event:'analysis_completed',target:'analysis',props:{outcome:'success',screen:'sequence',duration_ms:12,known_cut:true}});
 function fixture(){const folder=mkdtempSync(join(tmpdir(),'sp-usage-'));return {env:{DB:new DB(join(folder,'test.db')),TELEMETRY_ADMIN_IDS:'test-owner'},close:()=>rmSync(folder,{recursive:true,force:true})};}
 const id=randomUUID(), token='a'.repeat(64);
 function request(path,method='GET',data,auth){return new Request('https://example.org/api/telemetry/'+path,{method,headers:{...(method!=='GET'?{Origin:'https://example.org','Content-Type':'application/json'}:{}),...(auth?{Authorization:'Bearer '+auth}:{}),'cf-connecting-ip':randomUUID()},...(data?{body:JSON.stringify(data)}:{})});}

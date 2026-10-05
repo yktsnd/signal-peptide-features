@@ -90,3 +90,5 @@ SHA-256は、配列や実装を識別するための値です。再計算で同�
 
 
 UI 0.5 adds opt-in, content-free usage recording, deletion controls and an owner/local administrator report. See [usage analytics](docs/usage-analytics.md) for the event inventory, retention, validation and limits.
+
+UI 0.6では、配列図と選択残基の詳細を近くに配置し、初期表示の説明を整理しました。スマホ向けの指標一覧と索引も追加しています。[変更内容と検査](docs/ui-06.md)をご覧ください。

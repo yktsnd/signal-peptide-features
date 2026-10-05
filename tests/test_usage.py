@@ -21,7 +21,7 @@ def client(tmp_path, monkeypatch):
 def envelope():
     return {
         "id": str(uuid4()), "session": str(uuid4()), "seq": 1,
-        "at": int(time.time() * 1000), "schema": "1.0", "ui": "0.5",
+        "at": int(time.time() * 1000), "schema": "1.0", "ui": "0.6",
         "event": "analysis_completed", "target": "analysis",
         "props": {"outcome": "success", "duration_ms": 20},
     }
